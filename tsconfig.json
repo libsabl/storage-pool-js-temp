@@ -11,13 +11,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "useDefineForClassFields": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "$": ["src/index.ts"],
-      "$/*": ["src/*"],
-      "$test/*": ["test/*"]
-    }
-  },
-  "include": ["./src", "./test"]
+    "forceConsistentCasingInFileNames": true
+  }
 }

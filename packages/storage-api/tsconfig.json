@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "$": ["src"],
+      "$/*": ["src/*"],
+      "$test/*": ["test/*"],
+      "$mem-kv": ["../mem-kv/src"]
+    }
+  },
+  "include": ["./src", "./test"],
+  "references": []
+}

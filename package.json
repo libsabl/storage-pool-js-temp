@@ -1,11 +1,9 @@
 {
-  "name": "@sabl/storage-api",
+  "name": "@sabl/storage-api-workspace",
   "version": "0.1.0-a01",
-  "description": "A uniform and context-aware interface for storage pooling and transaction",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Workspace package. Do not publish.",
   "scripts": {
-    "build": "tsc --build tsconfig.build.json",
+    "build": "pnpm build --filter *",
     "clean": "rimraf coverage dist publish",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "test": "jest",
@@ -18,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/libsabl/rdb-js"
+    "url": "https://github.com/libsabl/storage-api-js"
   },
   "contributors": [
     "Joshua Honig"

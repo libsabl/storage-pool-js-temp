@@ -21,5 +21,6 @@
     "linearizable",
     "Transactable",
     "widecol"
-  ]
+  ],
+  "jest.jestCommandLine": "node ./node_modules/jest/bin/jest.js --projects ./packages/storage-api/jest.config.js ./packages/mem-kv/jest.config.js"
 }

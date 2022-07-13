@@ -31,9 +31,9 @@ For example, a document store would support APIs such as `insertOne`, `updateMan
 ```ts
 /** Example: Common Doc store API */
 interface DocStoreAPI {
-  insertOne(collection: string, doc:Doc, opts): Promise<void>;
-  insertMany(collection: string, docs: Doc[], opts): Promise<void>;
-  find(collection: string, filter: any): Promise<Cursor>;
+  insertOne(ctx: IContext, collection: string, doc:Doc, opts): Promise<void>;
+  insertMany(ctx: IContext, collection: string, docs: Doc[], opts): Promise<void>;
+  find(ctx: IContext, collection: string, filter: any): Promise<Cursor>;
   ... etc ...
 }
 ```
@@ -148,4 +148,4 @@ interface TxnOptions {
 
 `readOnly` indicates the transaction should be executed in a read-only mode if the target storage service supports it.
 
-Isolation level describes known [isolation levels](#https://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels) which may or may not be supported by an underlying storage driver. Implementation authors may choose to ignore an unsupported isolation level or throw an exception.
+`isolationLevel` describes known [**isolation levels**](https://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels) which may or may not be supported by an underlying storage driver. If an unsupported isolation level is requested, implementation authors may choose to ignore it or throw an exception.

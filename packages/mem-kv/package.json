@@ -1,0 +1,38 @@
+{
+  "name": "@sabl/mem-kv",
+  "version": "0.0.0-a01",
+  "description": "Example key-value store API and memory implementation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rimraf dist coverage",
+    "lint": "eslint \"src/**/*.ts\" --fix",
+    "test": "jest --coverage true --coverageReporters text",
+    "test:view": "pwsh -File ../../.scripts/test.ps1 -View -Pretty",
+    "test:refresh": "pwsh -File ../../.scripts/test.ps1 -Render -Pretty",
+    "cbt": "pnpm clean && pnpm build && pnpm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/libsabl/storage-api-js",
+    "directory": "packages/mem-kv"
+  },
+  "contributors": [
+    "Joshua Honig"
+  ],
+  "dependencies": {
+    "@sabl/context": "^0.3.3",
+    "@sabl/storage-api": "workspace:*"
+  },
+  "keywords": [
+    "sabl",
+    "storage"
+  ],
+  "license": "MIT",
+  "files": [
+    "tsconfig.json",
+    "src/**/*",
+    "dist/**/*"
+  ]
+}
