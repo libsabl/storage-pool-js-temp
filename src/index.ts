@@ -3,58 +3,15 @@
 // license that can be found in the LICENSE file.
 
 import { IContext } from '@sabl/context';
+import { IsolationLevel, StorageKind, StorageMode } from './enums';
 
-/**
- * Various isolation levels that storage drivers may support in beginTxn.
- * If a driver does not support a given isolation level an error may be returned.
- */
-export enum IsolationLevel {
-  default = 1,
-  readUncommitted = 2,
-  readCommitted = 3,
-  writeCommitted = 4,
-  repeatableRead = 5,
-  snapshot = 6,
-  serializable = 7,
-  linearizable = 8,
-}
+export { IsolationLevel, StorageKind, StorageMode };
+export { getStorageApi, withStorageApi, runTransaction } from './context';
 
 /** Options to be used in beginTxn */
 export interface TxnOptions {
   readonly isolationLevel?: IsolationLevel;
   readonly readOnly?: boolean;
-}
-
-/** The basic type of a storage API instance: pool, connection, or transaction */
-export enum StorageMode {
-  pool = 1,
-  conn = 2,
-  txn = 3,
-}
-
-/**
- * The underlying storage type: relational, document, graph, etc.
- * {@link StorageKind} values are strings, and authors may use
- * values not defined here
- */
-export enum StorageKind {
-  /** Placeholder unknown storage kind */
-  unknown = 'unknown',
-
-  /** A relation database implementing SQL APIs */
-  rdb = 'relational',
-
-  /** A document store such as Mongo */
-  doc = 'document',
-
-  /** A graph database implementing Gremlin APIs */
-  graph = 'graph',
-
-  /** A key-value store such as Redis */
-  keyval = 'key-value',
-
-  /** A wide-column store such as Cassandra */
-  widecol = 'wide-column',
 }
 
 /**
@@ -95,7 +52,11 @@ export interface Transactable extends StorageApi {
  * should call close() to return it to its source pool.
  */
 export interface StorageConn extends Transactable {
-  /** Return the connection to its source pool */
+  /**
+   * Return the connection to its source pool. `close` is safe
+   * to call concurrently with other operations and will not
+   * resolved until all other operations finish.
+   */
   close(): Promise<void>;
 }
 
@@ -115,7 +76,8 @@ export interface StoragePool extends Transactable {
 
   /**
    * Close the entire pool. Pools are meant to be long-lived and concurrent-safe,
-   * so this is generally only used on graceful program termination
+   * so this is generally only used on graceful program termination. `close`
+   * will wait until all running operations are completed.
    */
   close(): Promise<void>;
 }

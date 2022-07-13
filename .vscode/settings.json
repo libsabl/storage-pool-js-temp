@@ -19,7 +19,10 @@
     "Initter",
     "keyval",
     "linearizable",
+    "rjct",
+    "rslv",
     "Transactable",
+    "txns",
     "widecol"
   ]
 }
