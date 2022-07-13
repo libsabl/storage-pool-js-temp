@@ -22,9 +22,9 @@ These concepts are represented by the `StoragePool` and `StorageConn` interfaces
 
 Some storage services also support transactions. A transaction represents a series of actions whose effects either all succeed or all fail together. A transaction is represented by the `StorageTxn` interface.
 
-### Common API
+### Type-Specific CRUD APIs
 
-Many storage client libraries will expose the same type-specific storage APIs on all three basic types - pool, connection, and transaction.
+Many storage client libraries will expose the same type-specific CRUD APIs on all three basic types - pool, connection, and transaction.
 
 For example, a document store would support APIs such as `insertOne`, `updateMany`, and `find`:
 
@@ -43,7 +43,43 @@ All of these APIs are inherited by a `DocStorePool`, `DocStoreConn`, and `DocSto
 - If invoked on a connection, the connection is left open for subsequent operations
 - If invoked on a transaction, the transaction is left uncommitted for subsequent operations
 
-The actual makeup of the common storage API differs by storage type. However, this library still defines a very simple base `StorageAPI` that exposes two read-only properties that allow consuming code to make basic decisions about an implementing instance without having to use fickle reflection methods such as `instanceof`. 
+The actual makeup of the common storage API differs by storage type. However, this library still defines a very simple base `StorageAPI` that exposes two read-only properties that allow consuming code to make basic decisions about an implementing instance without having to use fickle reflection methods such as `instanceof`.
+
+#### Example: StackAPI
+
+The tests of this library include a minimal but accurate example of both the interfaces and an implementation for a type-specific api, using a simple stack as the underlying 'data store'. See [source](https://github.com/libsabl/storage-api-js/blob/main/test/fixtures/index.ts) for details.
+
+```ts
+// EXAMPLE, included in test/fixtures of this repo:
+
+// StackApi is the basic stack ops: push, peek, pop
+export interface StackApi extends StorageApi {
+  push(ctx: IContext, val: unknown): Promise<number>;
+  peek(ctx: IContext): Promise<unknown>;
+  pop(ctx: IContext): Promise<unknown>;
+}
+
+// StackTxn is a composition of the basic StorageTxn
+// (commit, rollback) with the StackApi
+export interface StackTxn extends StorageTxn, StackApi {}
+
+// Overrides basic Transactable so that the return
+// value is a StackTxn
+export interface StackTransactable extends Transactable {
+  beginTxn(ctx: IContext, opts?: TxnOptions): Promise<StackTxn>;
+}
+
+// Composition that is structurally compatible with StorageConn
+export interface StackConn extends StackApi, StackTransactable {
+  close(): Promise<void>;
+}
+
+// Composition that is structurally compatible with StoragePool
+export interface StackPool extends StackApi, StackTransactable {
+  conn(ctx: IContext): Promise<StackConn>;
+  close(): Promise<void>;
+}
+```
 
 ## API
 
@@ -149,3 +185,19 @@ interface TxnOptions {
 `readOnly` indicates the transaction should be executed in a read-only mode if the target storage service supports it.
 
 `isolationLevel` describes known [**isolation levels**](https://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels) which may or may not be supported by an underlying storage driver. If an unsupported isolation level is requested, implementation authors may choose to ignore it or throw an exception.
+
+### withStorageApi, getStorageApi
+
+This is a [context getter/setter pair](https://github.com/libsabl/patterns/blob/main/patterns/context.md#getter--setter-pattern) that adds or retrieves an `StorageApi` instance. It is used in [`runTransaction`](#runtransaction) to implement a canonical transaction workflow that is completely agnostic of underlying storage type.
+
+### runTransaction
+
+`runTransaction` accepts an existing context and an async callback to be run within the context of a transaction. It implements a canonical storage transaction workflow that automatically commits or rolls back:
+
+- If the callback resolves successfully, then the transaction's `commit` method is called
+- If the callback rejects, then the transaction's `rollback` method is called before passing the inner exception up the call stack.
+- If the current storage API on the provided context is already a transaction, then the callback is invoked with the existing context and transaction. 
+
+**NOTE**: This implementation reflects a pattern where true nested transactions are not supported. Authors are free to create their own implementations that do support truly nested transactions where inner transactions are committed or rejected independently of an outer transaction. This could be implemented for some relational databases using [transaction savepoints](https://en.wikipedia.org/wiki/Savepoint).
+
+For a complete illustration of the usage and expected behavior of `runTransaction`, see the [tests themselves](https://github.com/libsabl/storage-api-js/blob/main/test/context.spec.ts).

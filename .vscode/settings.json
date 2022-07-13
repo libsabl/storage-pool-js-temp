@@ -21,6 +21,7 @@
     "linearizable",
     "rjct",
     "rslv",
+    "savepoints",
     "Transactable",
     "txns",
     "widecol"
