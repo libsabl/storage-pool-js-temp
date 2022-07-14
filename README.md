@@ -1,10 +1,10 @@
-# @sabl/storage-api 
+# @sabl/storage-pool 
 
-**storage-api** is a simple, [context](https://github.com/libsabl/patterns/blob/main/patterns/context.md)-aware pattern for describing connection pooling and storage transactions agnostic of the underlying storage type. This same pattern works for relational, document, key-value, graph, and other storage architectures. 
+**storage-pool** is a simple, [context](https://github.com/libsabl/patterns/blob/main/patterns/context.md)-aware pattern for describing connection pooling and storage transactions agnostic of the underlying storage type. This same pattern works for relational, document, key-value, graph, and other storage architectures. 
 
-Defining these interfaces directly, along with simple generic logic for running code in the context of a transaction, allows authors to write effective business logic that include basic CRUD actions and even transaction workflows, without depending on a specific storage type, let alone a specific proprietary driver.
+Defining these interfaces directly allows authors to write effective business logic that includes basic CRUD actions and even transaction workflows, without depending on a specific storage type, let alone a specific proprietary driver. This is in turn allows concise and testable code while avoiding over-dependence on implementation details of underlying storage choices.
   
-For more detail on the storage-api pattern, see sabl / [patterns](https://github.com/libsabl/patterns#patterns) / [storage-api](https://github.com/libsabl/patterns/blob/main/patterns/storage-api.md).
+For more detail on the storage-pool pattern, see sabl / [patterns](https://github.com/libsabl/patterns#patterns) / [storage-pool](https://github.com/libsabl/patterns/blob/main/patterns/storage-pool.md).
 
 <!-- BEGIN:REMOVE_FOR_NPM -->
 > [**sabl**](https://github.com/libsabl/patterns) is an open-source project to identify, describe, and implement effective software patterns which solve small problems clearly, can be composed to solve big problems, and which work consistently across many programming languages.
@@ -47,7 +47,7 @@ The actual makeup of the common storage API differs by storage type. However, th
 
 #### Example: StackAPI
 
-The tests of this library include a minimal but accurate example of both the interfaces and an implementation for a type-specific api, using a simple stack as the underlying 'data store'. See [source](https://github.com/libsabl/storage-api-js/blob/main/test/fixtures/index.ts) for details.
+The tests of this library include a minimal but accurate example of both the interfaces and an implementation for a type-specific api, using a simple stack as the underlying 'data store'. See [source](https://github.com/libsabl/storage-pool-js/blob/main/test/fixtures/index.ts) for details.
 
 ```ts
 // EXAMPLE, included in test/fixtures of this repo:
@@ -200,4 +200,4 @@ This is a [context getter/setter pair](https://github.com/libsabl/patterns/blob/
 
 **NOTE**: This implementation reflects a pattern where true nested transactions are not supported. Authors are free to create their own implementations that do support truly nested transactions where inner transactions are committed or rejected independently of an outer transaction. This could be implemented for some relational databases using [transaction savepoints](https://en.wikipedia.org/wiki/Savepoint).
 
-For a complete illustration of the usage and expected behavior of `runTransaction`, see the [tests themselves](https://github.com/libsabl/storage-api-js/blob/main/test/context.spec.ts).
+For a complete illustration of the usage and expected behavior of `runTransaction`, see the [tests themselves](https://github.com/libsabl/storage-pool-js/blob/main/test/context.spec.ts).
