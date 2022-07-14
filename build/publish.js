@@ -38,17 +38,17 @@ function removeChunk(source, label) {
 
 async function addReadmeHeaders(source, pkgv) {
   const commit = await gitGetCommit();
-  const codeCovImg = `https://codecov.io/gh/libsabl/rdb-js/commit/${commit}/graph/badge.svg?token=TVL1XYSJHA`;
-  const codeCovPage = `https://codecov.io/gh/libsabl/rdb-js/tree/${commit}/src`;
-  const ghBrowse = `https://github.com/libsabl/rdb-js/tree/${commit}`;
-  let docsPath = `https://github.com/libsabl/rdb-js/blob/${commit}/docs/DOCS.md`;
+  const codeCovImg = `https://codecov.io/gh/libsabl/storage-pool-js/commit/${commit}/graph/badge.svg?token=TVL1XYSJHA`;
+  const codeCovPage = `https://codecov.io/gh/libsabl/storage-pool-js/tree/${commit}/src`;
+  const ghBrowse = `https://github.com/libsabl/storage-pool-js/tree/${commit}`;
+  let docsPath = `https://github.com/libsabl/storage-pool-js/blob/${commit}/docs/DOCS.md`;
 
   let md = `[![codecov](${codeCovImg})](${codeCovPage})`;
   md += EOL + EOL + '**version**: `' + pkgv + '`';
 
   if (pkgv.match(/^\d+\.\d+\.\d+$/)) {
-    docsPath = `https://github.com/libsabl/rdb-js/blob/v${pkgv}/docs/DOCS.md`;
-    const ghRelease = `https://github.com/libsabl/rdb-js/releases/tag/v${pkgv}`;
+    docsPath = `https://github.com/libsabl/storage-pool-js/blob/v${pkgv}/docs/DOCS.md`;
+    const ghRelease = `https://github.com/libsabl/storage-pool-js/releases/tag/v${pkgv}`;
     md += ' | **tag**: [`v' + pkgv + '`](' + ghRelease + ') ';
   }
   md += ' | **commit**: [`' + commit.substring(0, 9) + '`](' + ghBrowse + ')';
